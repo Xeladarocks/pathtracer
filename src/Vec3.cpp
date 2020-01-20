@@ -4,14 +4,14 @@
 using namespace std;
 
 Vec3::Vec3(float nx, float ny, float nz) {
-    x = nx;
-    y = ny;
-    z = nz;
+    this->x = nx;
+    this->y = ny;
+    this->z = nz;
 }
 void Vec3::set(float nx, float ny, float nz) {
-    x = nx;
-    y = ny;
-    z = nz;
+    this->x = nx;
+    this->y = ny;
+    this->z = nz;
 }
 Vec3 Vec3::add(Vec3 v) {
     return Vec3(this->x+v.x, this->y+v.y, this->z+v.z);
@@ -84,5 +84,5 @@ Vec3 Vec3::multiplyMat3(float mat[3][3]) {
 }
 
 string Vec3::toString() {
-    return "("+to_string(this->x)+", "+to_string(this->y)+", "+to_string(this->z)+")";
+    return "Vec3("+to_string(this->x)+", "+to_string(this->y)+", "+to_string(this->z)+")";
 }

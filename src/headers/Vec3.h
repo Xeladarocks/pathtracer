@@ -1,10 +1,11 @@
 #include <string>
 using namespace std;
+
 class Vec3 {
     public:
         float x, y, z;
 
-        Vec3(float nx=0.0,float ny=0.0,float nz=0.0); // constructor
+        Vec3(float nx=0.0f,float ny=0.0f,float nz=0.0f); // constructor
         void set(float nx, float ny, float nz);
         Vec3 copy(Vec3 v);
         Vec3 clone();
