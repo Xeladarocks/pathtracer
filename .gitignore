@@ -1,0 +1,6 @@
+/build/*
+!/build/PT.exe
+
+/.vscode/
+
+CMakeLists.txt
