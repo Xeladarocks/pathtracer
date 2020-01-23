@@ -1,14 +1,21 @@
 #include <iostream>
 using namespace std;
 
+// broad purpose
 #include "headers/Color.h"
-#include "headers/Vec3.h"
+#include <glm/glm.hpp>
+
+// project specific
+#include "headers/Scene.h"
+#include "headers/Util.h"
+#include "headers/Camera.h"
+#include "headers/Skybox.h"
+#include "headers/Object.h"
 
 int main() {
-    Vec3 v;
-    cout << v.add(Vec3(2, 3, 5)).scale(5).toString() << "\n";
+    Scene scene;
 
-    Color c(0.0f, 0.0f, 0.0f);
-    cout << c.addVal(125.0f).multiply(1.5f).toString() << "\n";
+    //Sphere sphere(glm::vec3(0, 1, 5));
+    //scene.AddObject(sphere);
     return 0;
 }
