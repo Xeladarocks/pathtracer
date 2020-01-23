@@ -3,19 +3,27 @@ using namespace std;
 
 // broad purpose
 #include "headers/Color.h"
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 // project specific
-#include "headers/Scene.h"
+#include "headers/Sphere.h"
+#include "headers/Ray.h"
 #include "headers/Util.h"
+#include "headers/Material.h"
+#include "headers/Object.h"
 #include "headers/Camera.h"
 #include "headers/Skybox.h"
-#include "headers/Object.h"
+#include "headers/Light.h"
+#include "headers/Scene.h"
 
 int main() {
     Scene scene;
 
-    //Sphere sphere(glm::vec3(0, 1, 5));
-    //scene.AddObject(sphere);
+    Sphere sphere(glm::vec3(0, 1, 5), 1, Color(255, 0, 0), Material());
+
+    scene.AddObject(sphere);
+
+    cout << glm::to_string(scene.objects[0].getPos()) << endl;
     return 0;
 }

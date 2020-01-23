@@ -1,8 +1,11 @@
+#ifndef CAMERA_H
+#define CAMERA_H
+
 using namespace std;
 
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 
-#include "headers/Util.h"
+#include "Util.h"
 
 class Camera {
     public:
@@ -11,3 +14,5 @@ class Camera {
 
         Camera(glm::vec3 nposition=glm::vec3(0, 1, 0), Rotation nrotation=defaultRotation);
 };
+
+#endif

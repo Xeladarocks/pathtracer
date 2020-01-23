@@ -1,6 +1,6 @@
 using namespace std;
 
-#include <glm/glm.hpp>
+#include "glm/glm.hpp"
 
 #include "headers/Ray.h"
 

@@ -1,5 +1,9 @@
-#include <string>
+#ifndef COLOR_H
+#define COLOR_H
+
 using namespace std;
+
+#include <string>
 
 class Color {
     public:
@@ -17,3 +21,5 @@ class Color {
         Color clamp();
         string toString();
 };
+
+#endif

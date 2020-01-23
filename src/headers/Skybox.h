@@ -1,10 +1,12 @@
+#ifndef SKYBOX_H
+#define SKYBOX_H
+
 using namespace std;
 
-#include <glm/glm.hpp>
-#include "headers/Color.h"
+#include "../glm/glm.hpp"
+#include "Color.h"
 
-const static Skybox defaultSkybox(glm::vec3(0,1,0),Color(),Color(),Color(),true);
-class Skybox : public Object {
+class Skybox {
     public:
         glm::vec3 up;
         Color topColor;
@@ -14,6 +16,14 @@ class Skybox : public Object {
         Color overrideColor;
         float intensity;
 
-        Skybox(glm::vec3 up=glm::vec3(0,1,0), Color topColor=Color(0,0,0), Color sideColor=Color(), Color bottomColor=Color(), bool override=false, Color overrideColor=Color(255, 20, 147), float intensity=1);
+        Skybox() {
+            this->up = glm::vec3(0,1,0);
+            this->topColor, this->sideColor, this->bottomColor = Color();
+            this->override = true; this->overrideColor = Color(255, 20, 147);
+            this->intensity = 1;
+        }
+        Skybox(Color topColor, Color sideColor, Color bottomColor, glm::vec3 up, bool override=false, Color overrideColor=Color(255, 20, 147), float intensity=1);
         Color getColorAt(glm::vec3 dir);
 };
+
+#endif

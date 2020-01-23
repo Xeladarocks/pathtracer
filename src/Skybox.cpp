@@ -2,7 +2,7 @@ using namespace std;
 
 #include "headers/Skybox.h"
 
-Skybox::Skybox(glm::vec3 nup, Color ntopColor, Color nsideColor, Color nbottomColor, bool noverride, Color noverrideColor, float nintensity) {
+Skybox::Skybox(Color ntopColor, Color nsideColor, Color nbottomColor, glm::vec3 nup, bool noverride, Color noverrideColor, float nintensity) {
     this->up = nup;
     this->topColor = ntopColor;
     this->sideColor = nsideColor;

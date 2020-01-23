@@ -1,6 +1,9 @@
+#ifndef RAY_H
+#define RAY_H
+
 using namespace std;
 
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 
 class Ray {
     public:
@@ -9,3 +12,5 @@ class Ray {
 
         Ray(glm::vec3 nposition, glm::vec3 ndirection);
 };
+
+#endif

@@ -1,8 +1,10 @@
+#ifndef UTIL_H
+#define UTIL_H
+
 using namespace std;
 
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 #include <string>
-#include "headers/Color.h"
 
 struct Rotation {
     glm::mat3 yaw;
@@ -14,3 +16,5 @@ static Rotation defaultRotation({
     glm::mat3(0, 0, 0,   0, 1, 0,   0, 0, 0),
     glm::mat3(0, 0, 0,   0, 1, 0,   0, 0, 0)
 });
+
+#endif

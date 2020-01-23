@@ -1,6 +1,9 @@
+#ifndef LIGHT_H
+#define LIGHT_H
+
 using namespace std;
 
-#include <glm/glm.hpp>
+#include "../glm/glm.hpp"
 
 #include <map>
 
@@ -13,3 +16,5 @@ class Light {
 
         Light(glm::vec3 nposition, float nintensity=1, int ntype=1);
 };
+
+#endif
