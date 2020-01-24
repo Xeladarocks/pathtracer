@@ -12,13 +12,15 @@ using namespace std;
 class Object {
     public:
         glm::vec3 position;
-
-        float RayIntersects(Ray Ray);
-        virtual glm::vec3 getPos()=0;
-        glm::vec3 CalculateNormal(glm::vec3 point);
-        Material GetMaterial();
+        Object(glm::vec3 position) {
+            this->position = position;
+        };
+        glm::vec3 getPos() {return this->position;};
+        virtual float RayIntersects(Ray Ray)=0;
+        virtual glm::vec3 CalculateNormal(glm::vec3 point)=0;
+        /*Material GetMaterial();
         Color GetColor(glm::vec3 point);
-        //Texture GetTexture()
+        //Texture GetTexture()*/
 };
 
 #endif

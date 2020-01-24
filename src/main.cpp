@@ -20,10 +20,10 @@ using namespace std;
 int main() {
     Scene scene;
 
-    Sphere sphere(glm::vec3(0, 1, 5), 1, Color(255, 0, 0), Material());
+    Sphere sphere = Sphere(glm::vec3(0, 1, 5), 1, Color(255, 0, 0), Material());
 
-    scene.AddObject(sphere);
+    scene.AddObject(&sphere);
 
-    cout << glm::to_string(scene.objects[0].getPos()) << endl;
+    cout << glm::to_string(scene.objects[0]->CalculateNormal(glm::vec3(0, 1, 5.5))) << endl;
     return 0;
 }

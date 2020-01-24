@@ -14,12 +14,12 @@ class Scene {
     public:
         Camera camera;
         Skybox skybox;
-        vector<Object> objects;
+        vector<Object*> objects;
         vector<Light> lights;
 
-        Scene(vector<Object> objects=vector<Object>(), vector<Light> lights=vector<Light>(), Camera camera=Camera(), Skybox skybox=Skybox());
-        void AddObject(Object object);
-        void AddObjects(vector<Object> objects);
+        Scene(vector<Object*> objects=vector<Object*>(), vector<Light> lights=vector<Light>(), Camera camera=Camera(), Skybox skybox=Skybox());
+        void AddObject(Object* object);
+        void AddObjects(vector<Object*> objects);
         void AddLight(Light light);
         void AddLights(vector<Light> lights);
         void SetSkybox(Skybox sb);

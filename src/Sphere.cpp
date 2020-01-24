@@ -3,8 +3,7 @@ using namespace std;
 #include "headers/Sphere.h"
 #include <optional>
 
-Sphere::Sphere(glm::vec3 position, float radius, Color color, Material material) {
-    this->position = position;
+Sphere::Sphere(glm::vec3 position, float radius, Color color, Material material): Object(position) {
     this->radius = radius;
     this->material = material;
     this->color = color;
