@@ -39,10 +39,14 @@ glm::vec3 Sphere::CalculateNormal(glm::vec3 point) {
     return glm::normalize(v);
 }
 
-/*// GetColor Gets the color of the sphere
+Material Sphere::GetMaterial() {
+    return this->material;
+}
+
+// GetColor Gets the color of the sphere
 Color Sphere::GetColor(glm::vec3 intersect) {
-    if (this->texture != null) {
-        return this.texture.GetColor(intersect)
-    }
-    return this.color;
-}*/
+    /*if (this->texture != null) {
+        return this->texture.GetColor(intersect)
+    }*/
+    return this->color;
+}

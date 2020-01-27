@@ -4,6 +4,7 @@
 using namespace std;
 
 #include <string>
+#include <vector>
 
 class Color {
     public:
@@ -18,6 +19,7 @@ class Color {
         Color multiply(float f);
         Color divide(float f);
         Color interpolate(Color c, float f);
+        static Color average(vector<Color> colors);
         Color clamp();
         string toString();
 };

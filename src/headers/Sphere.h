@@ -17,4 +17,6 @@ class Sphere: public Object {
         Sphere(glm::vec3 position, float radius, Color color, Material material);
         float RayIntersects(Ray ray);
         glm::vec3 CalculateNormal(glm::vec3 point);
+        Color GetColor(glm::vec3 intersect);
+        Material GetMaterial();
 };

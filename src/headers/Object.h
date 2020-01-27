@@ -18,9 +18,9 @@ class Object {
         glm::vec3 getPos() {return this->position;};
         virtual float RayIntersects(Ray Ray)=0;
         virtual glm::vec3 CalculateNormal(glm::vec3 point)=0;
-        /*Material GetMaterial();
-        Color GetColor(glm::vec3 point);
-        //Texture GetTexture()*/
+        virtual Material GetMaterial()=0;
+        virtual Color GetColor(glm::vec3 point)=0;
+        //Texture GetTexture()
 };
 
 #endif

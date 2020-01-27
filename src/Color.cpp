@@ -38,6 +38,21 @@ Color Color::interpolate(Color c, float f) {
         this->b+(c.b-this->b)*f
     );
 }
+Color Color::average(vector<Color> colors) {
+    float r, g, b = 0;
+
+	int length = colors.size();
+
+	for(int i = 0; i < length; i++) {
+		r += colors[i].r;
+		g += colors[i].g;
+		b += colors[i].b;
+	}
+
+	int lengthFixed = max(length, 1);
+
+	return Color(r/lengthFixed, g/lengthFixed, b/lengthFixed);
+}
 Color Color::clamp() {
     return Color(
         max(min(this->r, 255.0f), 0.0f),
