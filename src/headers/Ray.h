@@ -4,6 +4,9 @@
 using namespace std;
 
 #include "../glm/glm.hpp"
+#include "../glm/gtx/string_cast.hpp"
+
+#include <random>
 
 class Ray {
     public:
@@ -12,6 +15,9 @@ class Ray {
 
         Ray(glm::vec3 nposition, glm::vec3 ndirection);
         static Ray GenerateRandomRay(glm::vec3 origin, glm::vec3 normal, glm::vec3 reflectDirection, float diffuse);
+        string toString() {
+            return "Ray("+glm::to_string(this->position)+", "+glm::to_string(this->direction)+")";
+        };
 };
 
 #endif
