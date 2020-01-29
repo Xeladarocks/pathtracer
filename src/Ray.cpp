@@ -14,9 +14,9 @@ Ray::Ray(glm::vec3 nposition, glm::vec3 ndirection) {
 Ray Ray::GenerateRandomRay(glm::vec3 origin, glm::vec3 normal, glm::vec3 reflectDirection, float diffuse) {
 	// Create a random direction
 	glm::vec3 randomDirection = glm::normalize(glm::vec3({
-		rand_float(-1.0f, 1.0f),
-		rand_float(-1.0f, 1.0f),
-		rand_float(-1.0f, 1.0f),
+		rand_float(0.0f, 1.0f)*2-1,
+		rand_float(0.0f, 1.0f)*2-1,
+		rand_float(0.0f, 1.0f)*2-1,
     }));
 
 	// If the random direction we generated is pointing into the surface, we negate it so it points within 90 degrees of the surface normal

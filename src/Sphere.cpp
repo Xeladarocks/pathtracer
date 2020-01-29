@@ -19,17 +19,7 @@ float Sphere::RayIntersects(Ray ray) {
     if (discriminant < 0) {
         return -1;
     }
-    float t1 = (-k2 + sqrt(discriminant)) / (2*k1);
-    float t2 = (-k2 - sqrt(discriminant)) / (2*k1);
-    float t = -1;
-    /*if (min_dist < t1 && t1 < max_dist) {
-        t = t1;
-    }
-    if (min_dist < t2 && t2 < max_dist) {
-        t = t2;
-    }*/
-    t=t1;
-    // return distance
+    float t = (-k2 - sqrt(discriminant)) / (2*k1);
     return t;
 }
 

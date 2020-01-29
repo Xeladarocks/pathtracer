@@ -22,23 +22,23 @@ Color Renderer::renderPixel(Ray oray) {
     vector<Color> local_colors;
     Ray ray = oray;
 
-    for (int b = 0; b < 5; b++) {
+    for (int b = 0; b < this->recursion_depth; b++) {
         //rays_shot++;
         optional<IntersectionData> result = this->ClosestIntersection(ray);
         if (!result.has_value()) { // hit nothings
             local_colors.push_back(this->scene->skybox.getColorAt(ray.direction));
             break;
         }
-
         Object* object = result.value().object;
         glm::vec3 point = result.value().point;
-
         glm::vec3 normal = object->CalculateNormal(point);
         Color object_color = object->GetColor(point);
         Material object_mat = object->GetMaterial();
 
-        if(object_mat.emissive > 0) {
+        if(object_mat.emissive > 0.0f) {
             object_color = object_color.add(object_color.multiply(object_mat.emissive));
+        } else {
+            object_color = Color(0, 0, 0);
         }
 
         glm::vec3 reflectionDirection = glm::normalize( ray.direction - (normal*(glm::dot(normal, ray.direction)*2) ) );
@@ -55,8 +55,11 @@ Color Renderer::renderPixel(Ray oray) {
             if(object_mat.reflectivity < 1 || object_mat.diffuse > 0)
                 local_colors.push_back(this->bounceToColor(b, object_color));
 
-            if(object_mat.reflectivity <= 0 && object_mat.diffuse <= 0)break;else 
-            ray = Ray::GenerateRandomRay(point, normal, reflectionDirection, diffuse_amount);
+            if(object_mat.reflectivity <= 0 && object_mat.diffuse <= 0) {
+                break;
+            } else {
+                ray = Ray::GenerateRandomRay(point, normal, reflectionDirection, diffuse_amount);
+            }
         }
     }
     return Color::average(local_colors);
