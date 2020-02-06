@@ -1,0 +1,6 @@
+﻿  main.cpp
+d:\dev\c++\path tracer\path tracer\main.cpp(57): warning C4018: '<': signed/unsigned mismatch
+d:\dev\c++\path tracer\path tracer\main.cpp(66): warning C4018: '<': signed/unsigned mismatch
+d:\dev\c++\path tracer\path tracer\main.cpp(71): warning C4018: '<': signed/unsigned mismatch
+d:\dev\c++\path tracer\path tracer\main.cpp(94): warning C4018: '<': signed/unsigned mismatch
+  Path Tracer.vcxproj -> D:\dev\c++\Path Tracer\Debug\Path Tracer.exe
