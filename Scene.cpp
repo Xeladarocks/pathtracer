@@ -1,6 +1,5 @@
 using namespace std;
 
-#include "pch.h"
 #include <vector>
 #include "Scene.h"
 

@@ -1,21 +1,15 @@
-#include "pch.h"
 using namespace std;
-
-// disable deprecation warnings
-#define _CRT_SECURE_NO_DEPRECATE
 
 #include <iostream>
 #include <string>
 #include <ctime>
-#include <cmath> 
-#include <random>
-#include <thread>
+#include <cmath>
 #include <future>
 
 // broad purpose
 #include "Color.h"
-#include "../glm/glm.hpp"
-#include "../glm/gtx/string_cast.hpp"
+#include <glm/glm.hpp>
+#include <glm/gtx/string_cast.hpp>
 
 // project specific
 #include "Sphere.h"
@@ -23,7 +17,6 @@ using namespace std;
 #include "Ray.h"
 #include "Util.h"
 #include "Material.h"
-#include "Object.h"
 #include "Camera.h"
 #include "Skybox.h"
 #include "Light.h"

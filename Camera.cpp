@@ -1,5 +1,3 @@
-#include "pch.h"
-
 using namespace std;
 
 #include "Camera.h"

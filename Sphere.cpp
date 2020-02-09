@@ -1,8 +1,6 @@
-#include "pch.h"
 using namespace std;
 
 #include "Sphere.h"
-#include <optional>
 
 Sphere::Sphere(glm::vec3 position, float radius, Color color, Material material) : Object(position) {
 	this->radius = radius;

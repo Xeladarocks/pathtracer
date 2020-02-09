@@ -1,8 +1,6 @@
-#include "pch.h"
-
 using namespace std;
 
-#include "../glm/glm.hpp"
+#include <glm/glm.hpp>
 #include <map> 
 #include <string>
 
