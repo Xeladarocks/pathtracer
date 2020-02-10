@@ -1,6 +1,7 @@
 #pragma once
 using namespace std;
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include "Object.h"
 #include "Color.h"
@@ -9,16 +10,19 @@ using namespace std;
 
 class Sphere : public Object {
 public:
-	// glm::vec3 position; // from Object
-	float radius;
-	Material material;
-	Color color;
-	//Texture texture;
+    glm::vec3 position;
+    float radius;
+    Material material;
 
-	Sphere(glm::vec3 position, float radius, Color color, Material material);
-	float RayIntersects(Ray ray);
-	glm::vec3 CalculateNormal(glm::vec3 point);
-	Color GetColor(glm::vec3 intersect);
-	Material GetMaterial();
-	string GetName() { return typeid(this).name(); };
+    Sphere();
+
+    Sphere(glm::vec3 position, float radius, Material material);
+
+    float calculateIntersection(Ray ray);
+
+    glm::vec3 calculateNormal(glm::vec3 collisionPoint);
+
+    Material getMaterial();
+
+    glm::vec3 calculateUVCoordinates(glm::vec3 collisionPoint, glm::vec3 normal);
 };

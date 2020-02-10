@@ -1,4 +1,4 @@
-#include "Color.h"
+#include "inc/Color.h"
 #include <string>
 #include <algorithm> // min/max
 using namespace std;

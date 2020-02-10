@@ -1,41 +1,42 @@
 using namespace std;
 
-#include "Sphere.h"
+#include "inc/Sphere.h"
 
-Sphere::Sphere(glm::vec3 position, float radius, Color color, Material material) : Object(position) {
-	this->radius = radius;
-	this->material = material;
-	this->color = color;
-	//this->texture = texture;
+const double EPSILON = 0.00000001;
+
+Sphere::Sphere() {
+    this->position = glm::vec3();
+    this->radius = 0;
+    this->material = Material();
 }
 
-float Sphere::RayIntersects(Ray ray) {
-	glm::vec3 oc = ray.position - this->position;
-	float k1 = glm::dot(ray.direction, ray.direction);
-	float k2 = 2 * glm::dot(oc, ray.direction);
-	float k3 = glm::dot(oc, oc) - this->radius*this->radius;
-	float discriminant = k2 * k2 - 4 * k1*k3;
-	if (discriminant < 0) {
-		return -1;
-	}
-	float t = (-k2 - sqrt(discriminant)) / (2 * k1);
-	return t;
+Sphere::Sphere(glm::vec3 position, float radius, Material material) {
+    this->position = position;
+    this->radius = radius;
+    this->material = material;
 }
 
-// CalculateNormal Calculates the normal of the collision point
-glm::vec3 Sphere::CalculateNormal(glm::vec3 point) {
-	glm::vec3 v = point - this->position;
-	return glm::normalize(v);
+float Sphere::calculateIntersection(Ray ray) {
+    glm::vec3 oc = ray.origin - this->position;
+    float k1 = glm::dot(ray.direction, ray.direction);
+    float k2 = 2 * glm::dot(oc, ray.direction);
+    float k3 = glm::dot(oc, oc) - this->radius * this->radius;
+    float discriminant = k2 * k2 - 4 * k1 * k3;
+    if (discriminant < 0) {
+        return -1;
+    }
+    float t = (-k2 - sqrt(discriminant)) / (2 * k1);
+    return t;
 }
 
-Material Sphere::GetMaterial() {
-	return this->material;
+glm::vec3 Sphere::calculateNormal(glm::vec3 intersectionPoint) {
+    return glm::normalize(intersectionPoint - position);
 }
 
-// GetColor Gets the color of the sphere
-Color Sphere::GetColor(glm::vec3 intersect) {
-	/*if (this->texture != null) {
-		return this->texture.GetColor(intersect)
-	}*/
-	return this->color;
+Material Sphere::getMaterial() {
+    return material;
+}
+
+glm::vec3 Sphere::calculateUVCoordinates(glm::vec3 collisionPoint, glm::vec3 normal) {
+    return glm::vec3(atan2(normal.x, normal.z) / (2 * M_PI) + 0.5, normal.y * 0.5 + 0.5, 0.0);
 }

@@ -4,6 +4,7 @@
 
 using namespace std;
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include "Color.h"
 

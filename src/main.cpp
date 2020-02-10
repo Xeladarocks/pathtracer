@@ -1,3 +1,5 @@
+// g++ -o bin/main src/*.cpp -lpng -lpthread -O3 -g -std=c++17
+
 using namespace std;
 
 #include <iostream>
@@ -7,118 +9,107 @@ using namespace std;
 #include <future>
 
 // broad purpose
-#include "Color.h"
+#include "inc/Color.h"
+
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include <glm/gtx/string_cast.hpp>
+#include <png++/png.hpp>
 
 // project specific
-#include "Sphere.h"
-#include "Triangle.h"
-#include "Ray.h"
-#include "Util.h"
-#include "Material.h"
-#include "Camera.h"
-#include "Skybox.h"
-#include "Light.h"
-#include "Scene.h"
-#include "Renderer.h"
+#include "inc/Sphere.h"
+#include "inc/Triangle.h"
+#include "inc/Plane.h"
+#include "inc/Ray.h"
+#include "inc/Util.h"
+#include "inc/Material.h"
+#include "inc/Camera.h"
+#include "inc/Skybox.h"
+#include "inc/Scene.h"
+#include "inc/Renderer.h"
+#include "inc/Rotation.h"
 
-vector<Color> renderChunk(int thread_count, int x1, int x2, int y1, int y2, Scene scene, Renderer renderer);
+void renderChunk(int x0, int y0, int x1, int y1, Scene *scene, Renderer *renderer, png::image<png::rgba_pixel> *image);
+
+void setupScene(Scene *scene);
 
 int main() {
-	int sampling;
-	cout << "Samples: ";
-	cin >> sampling;
+    int sampling;
+    cout << "Samples: ";
+    cin >> sampling;
 
-	Scene scene; // scene
-	Renderer renderer(scene, 600, 600, sampling, 16, 8, 0);
+    Scene scene; // scene
+    Renderer renderer(&scene, 1920, 1080, sampling, 64, 16, 0.15);
 
-	Camera camera(glm::vec3(0, 1.5, -2)); // camera
-	scene.SetCamera(camera);
-	Skybox skybox(Color(63, 178, 232), Color(225, 244, 252), Color(225, 244, 252), true, Color(0, 0, 0)); // skybox
-	scene.SetSkybox(skybox);
+    Camera camera(glm::vec3(0, 1.5, 10.5), (float) renderer.height / (float) renderer.width, 180,
+                  Rotation((180 - 0) * M_PI / 180, 0, 0)); // camera
+    scene.setCamera(&camera);
+    Skybox skybox(Color(63, 178, 232), Color(225, 244, 252), Color(225, 244, 252), true, Color(0, 0, 0)); // skybox
+    scene.setSkybox(&skybox);
 
-	/** OBJECTS **/
-	Sphere sphere = Sphere(glm::vec3(0, 1, 5), 1, Color(255, 255, 255), Material(1, 1, 0, 0));
-	scene.AddObject(&sphere);
+    setupScene(&scene);
 
-	/*vector<Triangle> quad;
-	quad = newQuad(glm::vec3(-100,0,-100),glm::vec3(-100,0,100),glm::vec3(100,0,100),glm::vec3(10Color(255, 255, 255)0,0,-100), Material(0, 1, 1, 0), Color(255, 255, 255));*/
-	vector<Triangle> tris;
-	tris.push_back(Triangle(glm::vec3(-100, 0, -100), glm::vec3(-100, 0, 100), glm::vec3(100, 0, 100), Color(255, 255, 255), Material(0, 1, 1, 0)));
-	tris.push_back(Triangle(glm::vec3(100, 0, 100), glm::vec3(100, 0, -100), glm::vec3(-100, 0, -100), Color(255, 255, 255), Material(0, 1, 1, 0)));
-	for (int i = 0; i < tris.size(); i++) {
-		scene.AddObject(&tris[i]);
-	}
+    png::image<png::rgba_pixel> image(renderer.width, renderer.height);
 
-	vector<Triangle> light;
-	float lh = 4.0f; // light height
-	float ls = 3.0f; // light size
-	light.push_back(Triangle(glm::vec3(ls/2.0, lh, 5.0+ls/2.0), glm::vec3(ls/2.0, lh, 5.0-ls/2.0), glm::vec3(-ls/2, lh, 5-ls/2), Color(255, 255, 255), Material(0, 0, 0, 1)));
-	light.push_back(Triangle(glm::vec3(-ls/2.0, lh, 5.0-ls/2.0), glm::vec3(-ls/2.0, lh, 5.0+ls/2.0), glm::vec3(ls/2, lh, 5+ls/2), Color(255, 255, 255), Material(0, 0, 0, 1)));
-	for (int i = 0; i < light.size(); i++) {
-		scene.AddObject(&light[i]);
-	}
-	/** ------- **/
+    cout << "dimensions: " << to_string(renderer.width) << "x" << to_string(renderer.height) << "\n";
 
-	for (int o = 0; o < renderer.scene->objects.size(); o++) {
-		cout << scene.objects[o]->GetName() << " " << glm::to_string(scene.objects[o]->position) << "\n";
-	}
+    /*try { // Debugging purposes
+        renderChunk(0, 0, (int) renderer.width, (int) renderer.height, &scene, &renderer, &image);
+    } catch(const char* err) {
+        cout << string(err);
+    }*/
 
-	FILE *fp;
-	string file_loc = "../output/main" + to_string(std::time(nullptr)) + ".ppm";
-	cout << "output: " << file_loc << "\n";
-	fp = fopen(file_loc.c_str(), "w");
-	fprintf(fp, "P3\n%d %d\n255\n", renderer.width, renderer.height);
+    vector<thread> threads;
+    int threadCount = renderer.thread_count;
+    for (int i = 0; i < threadCount; i++) {
+        int width = renderer.width / threadCount;
 
-	cout << "dimensions: " << renderer.width << "x" << renderer.height << "\n";
+        threads.emplace_back(renderChunk, i * width, 0, i * width + width, renderer.height, &scene, &renderer, &image);
+    }
+    for (int i = 0; i < threadCount; i++) {
+        threads[i].join();
+    }
 
-	std::vector<std::future<vector<Color>>> threads;
-	for (int t = 0; t < renderer.thread_count; t++) {
-		int x = int((float)t * (renderer.width / (float)renderer.thread_count));
-		int width = int(ceil(renderer.width / (float)renderer.thread_count));
-
-		threads.push_back(async(std::launch::async, renderChunk, t, x, 0, x + width, renderer.height, scene, renderer));
-	}
-	int total = 0;
-	for (auto&& fut : threads) {
-		total++;
-		vector<Color> cols = fut.get();
-		for (int c = 0; c < cols.size(); c++) {
-			fprintf(fp, "%d %d %d\n", (int)cols[c].r, (int)cols[c].g, (int)cols[c].b);
-		}
-	}
-
-	cout << "A total of " << total << "threads have completed\n";
-
-	fclose(fp);
-	cout << '\r' << "100% complete";
-	return 0;
+    image.write("output.png");
 }
 
-vector<Color> renderChunk(int thread_id, int x1, int y1, int x2, int y2, Scene scene, Renderer renderer) {
-	vector<Color> total_colors;
-	for (int x = x1; x < x2; x++) {
-		//if (x % (renderer.height / 20) == 0)cout << '\r' << (renderer.height - (float) x) / renderer.height * 100 << "% complete" << std::flush;
-		for (int y = y2; y > y1; y--) {
-			/*for (int y = renderer.height; y > 0; y--) {
-				for (int x = 0; x < renderer.width; x++) {*/
-			Color col;
-			for (int s = 0; s < renderer.samples; s++) {
-				float u, v;
-				u = x + rand_float(0.0f, 1.0f);
-				v = y + rand_float(0.0f, 1.0f);
-				glm::vec3 direction = renderer.CanvasToViewport(glm::vec2(v, renderer.height-u));
-				/*direction = scene.camera.rotation.roll * direction;
-				direction = scene.camera.rotation.pitch * direction;
-				direction = scene.camera.rotation.yaw * direction;*/
-				Color traced_color = renderer.renderPixel(Ray(scene.camera.position, direction));
-				col = col.add(traced_color);
-			}
-			col = col.divide((float)renderer.samples);
-			total_colors.push_back(col);
-		}
-	}
-	cout << '\r' << thread_id / renderer.thread_count * 100 << "% complete" << flush;
-	return total_colors;
+void renderChunk(int x0, int y0, int x1, int y1, Scene *scene, Renderer *renderer, png::image<png::rgba_pixel> *image) {
+    for (int x = x0; x < x1; x++) {
+        for (int y = y0; y < y1; y++) {
+            Color col;
+            for (int s = 0; s < renderer->samples; s++) {
+                float u, v;
+                u = (x + randomDouble()) / renderer->width;
+                v = (y + randomDouble()) / renderer->height;
+                Ray ray = scene->camera->getRay(u, v);
+
+                Color traced_color = renderer->renderPixel(ray);
+                col = col.add(traced_color);
+            }
+            col = col.divide((float) renderer->samples).clamp();
+            col.r = 255 * pow(col.r / 255, 1 / 2.2);
+            col.g = 255 * pow(col.g / 255, 1 / 2.2);
+            col.b = 255 * pow(col.b / 255, 1 / 2.2); // gamma correction
+            image->set_pixel(x, y, png::rgba_pixel(col.r, col.g, col.b, 255));
+        }
+    }
+}
+
+void setupScene(Scene *scene) {
+    Sphere sphere1 = Sphere(glm::vec3(-2.5, 1.25, 0.0), 1.25, Material(1.0, 0.0, 0.0, Color(255.0, 255.0, 255.0)));
+    scene->addObject(std::make_unique<Sphere>(sphere1));
+
+    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 0.0), 1.25, Material(0.0, 1.0, 0.0, Color(255.0, 50.0, 50.0)));
+    scene->addObject(std::make_unique<Sphere>(sphere2));
+
+    Sphere sphere3 = Sphere(glm::vec3(2.5, 1.25, 0.0), 1.25, Material(1, 0.5, 0.0, Color(50.0, 255.0, 50.0)));
+    scene->addObject(std::make_unique<Sphere>(sphere3));
+
+    Sphere light = Sphere(glm::vec3(-35.0, 35.0, 0.0), 30, Material(0.0, 0.0, 1.0, Color(255.0, 255.0, 255.0)));
+    scene->addObject(std::make_unique<Sphere>(light));
+
+    Plane floor = Plane(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),
+                        Material(0.0, 1.0, 0.0, Color(0.0, 0.0, 0.0)));
+    scene->addObject(std::make_unique<Plane>(floor));
 }

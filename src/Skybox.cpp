@@ -1,6 +1,6 @@
 using namespace std;
 
-#include "Skybox.h"
+#include "inc/Skybox.h"
 
 Skybox::Skybox(Color ntopColor, Color nsideColor, Color nbottomColor, bool noverride, Color noverrideColor, float nintensity, glm::vec3 nup) {
 	this->up = nup;

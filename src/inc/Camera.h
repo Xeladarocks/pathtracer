@@ -5,15 +5,21 @@
 
 using namespace std;
 
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/glm.hpp>
 #include "Util.h"
+#include "Rotation.h"
 
 class Camera {
 public:
-	glm::vec3 position;
-	Rotation rotation;
+    glm::vec3 position;
+    Rotation rotation;
+    float aspectRatio;
+    float fov;
 
-	Camera(glm::vec3 nposition = glm::vec3(0, 1, 0), Rotation nrotation = defaultRotation);
+    Camera(glm::vec3 position, float aspectRatio, float fov, Rotation rotation);
+
+    Ray getRay(double x, double y);
 };
 
 #endif

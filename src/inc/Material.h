@@ -3,21 +3,18 @@
 #define MATERIAL_H
 
 using namespace std;
+#include "Color.h"
 
 class Material {
 public:
-	float reflectivity;
-	float diffuse;
-	float specular;
-	float emissive;
+    float reflectivity;
+    float diffuse;
+    float emissive;
+    Color color;
 
-	Material() {
-		this->reflectivity = 0;
-		this->diffuse = 1;
-		this->specular = 0;
-		this->emissive = 0;
-	}
-	Material(float reflectivity, float diffuse, float specular, float emissive);
+    Material();
+
+    Material(float reflectivity, float diffuse, float emissive, Color color);
 };
 
 #endif

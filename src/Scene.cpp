@@ -1,38 +1,34 @@
 using namespace std;
 
 #include <vector>
-#include "Scene.h"
+#include <iostream>
+#include "inc/Scene.h"
 
-Scene::Scene(vector<Object*> objects, vector<Light> lights, Camera camera, Skybox skybox) {
-	this->camera = camera;
-	this->skybox = skybox;
-	this->objects = objects;
-	this->lights = lights;
+Scene::Scene() {}
+
+void Scene::setSkybox(Skybox *skybox) {
+    this->skybox = skybox;
 }
-void Scene::AddObject(Object* object) {
-	this->objects.push_back(object);
+
+void Scene::setCamera(Camera *camera) {
+    this->camera = camera;
 }
-void Scene::AddObjects(vector<Object*> objects) {
-	for (int i = 0; i < objects.size(); i++) {
-		this->objects.push_back(objects[i]);
-	}
+
+void Scene::addObject(std::unique_ptr<Object> object) {
+    objects.emplace_back(std::move(object));
 }
-void Scene::AddTriangles(vector<Triangle> tris) {
-	for (int i = 0; i < tris.size(); i++) {
-		this->AddObject(&tris[i]);
-	}
-}
-void Scene::AddLight(Light light) {
-	this->lights.push_back(light);
-}
-void Scene::AddLights(vector<Light> lights) {
-	for (int i = 0; i < lights.size(); i++) {
-		this->AddLight(lights[i]);
-	}
-}
-void Scene::SetSkybox(Skybox sb) {
-	this->skybox = sb;
-}
-void Scene::SetCamera(Camera cam) {
-	this->camera = cam;
+
+Intersection Scene::castRay(Ray ray) {
+    Object *object = nullptr;
+    float closestDistance = -1;
+
+    for (int i = 0; i < this->objects.size(); i++) {
+        float dist = this->objects[i].get()->calculateIntersection(ray);
+        if (dist >= 0 && (dist < closestDistance || closestDistance < 0)) {
+            closestDistance = dist;
+            object = this->objects[i].get();
+        }
+    }
+
+    return Intersection({closestDistance > -1, closestDistance, ray.across(closestDistance), object});
 }
