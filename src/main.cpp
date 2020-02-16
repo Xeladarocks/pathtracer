@@ -40,7 +40,7 @@ int main() {
     cin >> sampling;
 
     Scene scene; // scene
-    Renderer renderer(&scene, 1920, 1080, sampling, 64, 16, 0.15);
+    Renderer renderer(&scene, 600, 600, sampling, 32, 8, 0.5);
 
     Camera camera(glm::vec3(0, 1.5, 10.5), (float) renderer.height / (float) renderer.width, 180,
                   Rotation((180 - 0) * M_PI / 180, 0, 0)); // camera
@@ -54,12 +54,6 @@ int main() {
 
     cout << "dimensions: " << to_string(renderer.width) << "x" << to_string(renderer.height) << "\n";
 
-    /*try { // Debugging purposes
-        renderChunk(0, 0, (int) renderer.width, (int) renderer.height, &scene, &renderer, &image);
-    } catch(const char* err) {
-        cout << string(err);
-    }*/
-
     vector<thread> threads;
     int threadCount = renderer.thread_count;
     for (int i = 0; i < threadCount; i++) {
@@ -68,10 +62,14 @@ int main() {
         threads.emplace_back(renderChunk, i * width, 0, i * width + width, renderer.height, &scene, &renderer, &image);
     }
     for (int i = 0; i < threadCount; i++) {
-        threads[i].join();
+        try {
+            threads[i].join();
+        } catch (const char *err) {
+            cout << string(err);
+        }
     }
 
-    image.write("output.png");
+    image.write("../output.png");
 }
 
 void renderChunk(int x0, int y0, int x1, int y1, Scene *scene, Renderer *renderer, png::image<png::rgba_pixel> *image) {
@@ -97,19 +95,21 @@ void renderChunk(int x0, int y0, int x1, int y1, Scene *scene, Renderer *rendere
 }
 
 void setupScene(Scene *scene) {
-    Sphere sphere1 = Sphere(glm::vec3(-2.5, 1.25, 0.0), 1.25, Material(1.0, 0.0, 0.0, Color(255.0, 255.0, 255.0)));
+    Sphere sphere1 = Sphere(glm::vec3(-3, 1.25, 0.0), 1.25, Material(0.5, 0.5, 0.0, Color(0.0, 0.0, 255.0)));
     scene->addObject(std::make_unique<Sphere>(sphere1));
 
-    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 0.0), 1.25, Material(0.0, 1.0, 0.0, Color(255.0, 50.0, 50.0)));
-    scene->addObject(std::make_unique<Sphere>(sphere2));
+    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 0.0), 1.25, Material(0.0, 0.0, 1.0, Color(50.0, 255.0, 50.0)));
+    //scene->addObject(std::make_unique<Sphere>(sphere2));
 
-    Sphere sphere3 = Sphere(glm::vec3(2.5, 1.25, 0.0), 1.25, Material(1, 0.5, 0.0, Color(50.0, 255.0, 50.0)));
+    Sphere sphere3 = Sphere(glm::vec3(3, 1.25, 0.0), 1.25, Material(0.0, 1, 0.0, Color(255.0, 50.0, 50.0)));
     scene->addObject(std::make_unique<Sphere>(sphere3));
 
-    Sphere light = Sphere(glm::vec3(-35.0, 35.0, 0.0), 30, Material(0.0, 0.0, 1.0, Color(255.0, 255.0, 255.0)));
+    Sphere light = Sphere(glm::vec3(0, 1.25, 0.0), 1.25, Material(0.0, 0.0, 1.0, Color(255.0, 255.0, 255.0)));
     scene->addObject(std::make_unique<Sphere>(light));
 
     Plane floor = Plane(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),
-                        Material(0.0, 1.0, 0.0, Color(0.0, 0.0, 0.0)));
+                        Material(0.0, 1.0, 0.0, Color(255.0, 255.0, 255.0)));
     scene->addObject(std::make_unique<Plane>(floor));
+    //Sphere floor = Sphere(glm::vec3(0, -50, 0), 50, Material(0.0, 1.0, 0.0, Color(255, 255, 255)));
+    //scene->addObject(std::make_unique<Sphere>(floor));
 }

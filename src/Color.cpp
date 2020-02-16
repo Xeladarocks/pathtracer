@@ -1,17 +1,31 @@
 #include "inc/Color.h"
 #include <string>
 #include <algorithm> // min/max
+
 using namespace std;
 
-Color::Color(float nr, float ng, float nb) {
-	this->r = nr;
-	this->g = ng;
-	this->b = nb;
+Color::Color() {
+    this->r = 0.0f;
+    this->g = 0.0f;
+    this->b = 0.0f;
 }
+
+Color::Color(float nrgb) {
+    this->r = nrgb;
+    this->g = nrgb;
+    this->b = nrgb;
+}
+
+Color::Color(float nr, float ng, float nb) {
+    this->r = nr;
+    this->g = ng;
+    this->b = nb;
+}
+
 void Color::set(float nr, float ng, float nb) {
-	this->r = nr;
-	this->g = ng;
-	this->b = nb;
+    this->r = nr;
+    this->g = ng;
+    this->b = nb;
 }
 Color Color::add(Color c) {
 	return Color(this->r + c.r, this->g + c.g, this->b + c.b);
@@ -39,15 +53,17 @@ Color Color::interpolate(Color c, float f) {
 	);
 }
 Color Color::average(vector<Color> colors) {
-	float r = 0; float g = 0; float b = 0;
-	int length = colors.size();
-	for (int i = 0; i < length; i++) {
-		r += colors[i].r;
-		g += colors[i].g;
-		b += colors[i].b;
-	}
-	int lengthFixed = max(length, 1);
-	return Color(r / lengthFixed, g / lengthFixed, b / lengthFixed);
+    float r = 0.0f;
+    float g = 0.0f;
+    float b = 0.0f;
+    int length = colors.size();
+    for (int i = 0; i < length; i++) {
+        r += colors[i].r;
+        g += colors[i].g;
+        b += colors[i].b;
+    }
+    int lengthFixed = max(length, 1);
+    return Color(r / lengthFixed, g / lengthFixed, b / lengthFixed);
 }
 Color Color::clamp() {
 	return Color(

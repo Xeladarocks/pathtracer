@@ -2,7 +2,7 @@ using namespace std;
 
 #include "inc/Sphere.h"
 
-const double EPSILON = 0.00000001;
+const float EPSILON = 0.00001;
 
 Sphere::Sphere() {
     this->position = glm::vec3();
@@ -25,12 +25,15 @@ float Sphere::calculateIntersection(Ray ray) {
     if (discriminant < 0) {
         return -1;
     }
-    float t = (-k2 - sqrt(discriminant)) / (2 * k1);
-    return t;
+    float t1 = (-k2 - sqrt(discriminant)) / (2 * k1);
+    float t2 = (-k2 + sqrt(discriminant)) / (2 * k1);
+    if (t1 > EPSILON)return t1;
+    if (t2 > EPSILON)return t2;
+    return -1;
 }
 
 glm::vec3 Sphere::calculateNormal(glm::vec3 intersectionPoint) {
-    return glm::normalize(intersectionPoint - position);
+    return glm::normalize(intersectionPoint - this->position);
 }
 
 Material Sphere::getMaterial() {

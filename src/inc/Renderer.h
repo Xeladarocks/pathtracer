@@ -17,11 +17,13 @@ public:
     Renderer(Scene *scene, int width, int height, int samples, int thread_count = 1, int recursion_depth = 2,
              float light_loss = 0.2, float viewport_size = 1, float projection_plane_z = 1);
 
-    Color renderPixel(Ray ray);
+    Color renderPixel(Ray ray, int depth = 1);
 
     Intersection ClosestIntersection(Ray *ray);
 
     Color bounceToColor(int b, Color sphere_color);
+
+    Color diffuseDarken(Color color, Color lcolor);
 
     glm::vec3 CanvasToViewport(glm::vec2 p2d);
 

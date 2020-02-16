@@ -18,6 +18,12 @@ public:
     glm::vec3 across(float distance);
 
     static Ray GenerateRandomRay(glm::vec3 origin, glm::vec3 normal, glm::vec3 reflectDirection, float diffuse);
+
+    static glm::vec3 random_in_unit_sphere();
+
+    static glm::vec3 diffuse(glm::vec3 normal);
+
+    static glm::vec3 reflect(Ray ray, glm::vec3 normal);
 };
 
 #endif

@@ -16,18 +16,22 @@ public:
 	Color bottomColor;
 	bool override;
 	Color overrideColor;
-	float intensity;
+    float intensity;
 
-	Skybox() {
-		this->up = glm::vec3(0, 1, 0);
-		this->topColor = Color(255, 20, 147);
-		this->sideColor = Color(255, 20, 147);
-		this->bottomColor = Color(255, 255, 255);
-		this->override = false; this->overrideColor = Color(255, 20, 147);
-		this->intensity = 1;
-	}
-	Skybox(Color topColor, Color sideColor, Color bottomColor, bool override = false, Color overrideColor = Color(255, 20, 147), float intensity = 1, glm::vec3 up = glm::vec3(0, 1, 0));
-	Color getColorAt(glm::vec3 dir);
+    Skybox() {
+        this->up = glm::vec3(0, 1, 0);
+        this->topColor = Color(255.0f, 20.0f, 147.0f);
+        this->sideColor = Color(255.0f, 20.0f, 147.0f);
+        this->bottomColor = Color(255.0f, 255.0f, 255.0f);
+        this->override = false;
+        this->overrideColor = Color(255.0f, 20.0f, 147.0f);
+        this->intensity = 1;
+    }
+
+    Skybox(Color topColor, Color sideColor, Color bottomColor, bool override = false,
+           Color overrideColor = Color(255.0f, 20.0f, 147.0f), float intensity = 1, glm::vec3 up = glm::vec3(0, 1, 0));
+
+    Color getColorAt(glm::vec3 dir);
 };
 
 #endif
