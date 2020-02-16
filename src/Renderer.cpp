@@ -1,7 +1,6 @@
 using namespace std;
 
 #include <iostream>
-#include <random>
 #include "inc/Renderer.h"
 #include "inc/Util.h"
 
@@ -38,25 +37,25 @@ Color Renderer::renderPixel(Ray ray, int depth) {
     Material material = intersect.object->getMaterial();
 
     glm::vec3 reflectionDir = Ray::reflect(ray, normal);
-    glm::vec3 diffusionDir = Ray::diffuse(normal);
+    glm::vec3 diffuseDir = Ray::diffuse(normal);
 
     glm::vec3 ndir;
     if (material.diffuse > 0) {
-        ndir = diffusionDir; // new final direction
+        ndir = diffuseDir; // new final direction
     }
     if (material.reflectivity > 0) {
         ndir = reflectionDir;
     }
     if (material.diffuse > 0 && material.reflectivity > 0) {
-        if (randomDouble() < (material.diffuse + material.reflectivity) / 2) ndir = diffusionDir;
+        if (randomDouble() < 0.5) ndir = diffuseDir;
     }
 
-    if (depth < this->recursion_depth && material.diffuse > 0)
-        return Color(255.0f).multiply(material.emissive).add(
-                this->renderPixel(Ray(intersect.collisionPoint + (ndir * 0.00001f), ndir), depth + 1).multiply(
-                        material.diffuse));
+    if (depth < this->recursion_depth)
+        return material.color.multiply(material.emissive).add(
+                this->renderPixel(Ray(intersect.collisionPoint + (ndir * 0.001f), ndir), depth + 1).multiply(
+                        this->light_loss));
     else
-        return Color(255.0f).multiply(material.emissive);
+        return material.color.multiply(material.emissive);
 
     /*Color object_color;
     if (material.emissive > 0.0f) {
@@ -90,15 +89,6 @@ Color Renderer::renderPixel(Ray ray, int depth) {
     }*/
     //}
     return Color::average(local_colors);
-}
-
-Color Renderer::bounceToColor(int b, Color color) {
-    float c = (float) b * 255.0f * this->light_loss;
-    return color.subVal(c);
-}
-
-Color Renderer::diffuseDarken(Color color, Color lcolor) {
-
 }
 
 glm::vec3 Renderer::CanvasToViewport(glm::vec2 p2d) {

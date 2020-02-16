@@ -15,7 +15,12 @@ void Scene::setCamera(Camera *camera) {
 }
 
 void Scene::addObject(std::unique_ptr<Object> object) {
-    objects.emplace_back(std::move(object));
+    this->objects.emplace_back(move(object));
+}
+
+void Scene::addObjects(vector<std::unique_ptr<Object>> &vector) {
+    for (int i = 0; i < vector.size(); i++)
+        this->objects.emplace_back(move(vector[i]));
 }
 
 Intersection Scene::castRay(Ray ray) {

@@ -2,16 +2,15 @@ using namespace std;
 
 #include "inc/Triangle.h"
 
-Triangle::Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, Color color, Material material) {
+Triangle::Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, Material material) {
     this->v1 = v1;
     this->v2 = v2;
     this->v3 = v3;
     this->material = material;
-    this->color = color;
     //this->texture = texture;
 }
 
-float Triangle::RayIntersects(Ray ray) {
+float Triangle::calculateIntersection(Ray ray) {
     glm::vec3 edge1 = this->v2 - this->v1;
     glm::vec3 edge2 = this->v3 - this->v1;
 
@@ -46,22 +45,15 @@ float Triangle::RayIntersects(Ray ray) {
 	return -1;
 }
 
-glm::vec3 Triangle::CalculateNormal(glm::vec3 point) {
-	glm::vec3 edge1 = this->v2 - this->v1;
-	glm::vec3 edge2 = this->v3 - this->v1;
+glm::vec3 Triangle::calculateNormal(glm::vec3 point) {
+    glm::vec3 edge1 = this->v2 - this->v1;
+    glm::vec3 edge2 = this->v3 - this->v1;
 
-	glm::vec3 cross = glm::cross(edge1, edge2);
+    glm::vec3 cross = glm::cross(edge1, edge2);
 
-	return glm::normalize(cross);
+    return glm::normalize(cross);
 }
 
-Material Triangle::GetMaterial() {
-	return this->material;
-}
-
-Color Triangle::GetColor(glm::vec3 intersect) {
-	/*if (this->texture != NULL) {
-		return this->texture.GetColor(intersect);
-	}*/
-	return this->color;
+Material Triangle::getMaterial() {
+    return this->material;
 }

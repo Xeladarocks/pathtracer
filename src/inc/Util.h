@@ -50,6 +50,12 @@ static double randomDouble() {
     return dist(eng);
 }
 
+static vector<unique_ptr<Object>> Rect(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, Material mat) {
+    vector<unique_ptr<Object>> list;
+    list.emplace_back(make_unique<Triangle>(p1, p2, p3, mat));
+    list.emplace_back(make_unique<Triangle>(p3, p4, p1, mat));
+    return list;
+}
 
 struct Intersection {
     bool hit;

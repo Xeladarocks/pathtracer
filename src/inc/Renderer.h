@@ -20,11 +20,6 @@ public:
     Color renderPixel(Ray ray, int depth = 1);
 
     Intersection ClosestIntersection(Ray *ray);
-
-    Color bounceToColor(int b, Color sphere_color);
-
-    Color diffuseDarken(Color color, Color lcolor);
-
     glm::vec3 CanvasToViewport(glm::vec2 p2d);
 
     void SetScene(Scene &scene);

@@ -23,9 +23,12 @@ public:
 
     void setCamera(Camera *camera);
 
-    void addObject(std::unique_ptr<Object> object);
+    void addObject(unique_ptr<Object> object);
+
+    void addObjects(vector<unique_ptr<Object>> &vector);
 
     Intersection castRay(Ray ray);
+
 };
 
 #endif
