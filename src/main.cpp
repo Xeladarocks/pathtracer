@@ -45,7 +45,7 @@ int main() {
     Camera camera(glm::vec3(0, 1.5, 10.5), (float) renderer.height / (float) renderer.width, 180,
                   Rotation((180 - 0) * M_PI / 180, 0, 0)); // camera
     scene.setCamera(&camera);
-    Skybox skybox(Color(63, 178, 232), Color(225, 244, 252), Color(225, 244, 252), true, Color(0, 0, 0)); // skybox
+    Skybox skybox(Color(63, 178, 232), Color(225, 244, 252), Color(225, 244, 252), false, Color(0, 0, 0)); // skybox
     scene.setSkybox(&skybox);
 
     try {

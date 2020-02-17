@@ -2,5 +2,7 @@
 !/build/*.exe
 
 /.idea/
-
-/cmake-build-debug/
+/src/cmake-build-debug/
+core
+gmon.out
+profile.txt
