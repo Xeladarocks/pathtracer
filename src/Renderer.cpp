@@ -18,20 +18,13 @@ Renderer::Renderer(Scene *scene, int width, int height, int samples, int thread_
 }
 
 Color Renderer::renderPixel(Ray ray, int depth) {
-    vector<Color> local_colors;
-
-    //for (int b = 0; b < this->recursion_depth; b++) {
     //rays_shot++;
     Intersection intersect = this->scene->castRay(ray);
     if (!intersect.hit) {
         if (scene->skybox) {
             return scene->skybox->getColorAt(ray.direction);
-            local_colors.push_back(scene->skybox->getColorAt(ray.direction));
-            //break;
         }
         return Color(0.0f);
-        local_colors.emplace_back(0.0, 0.0, 0.0);
-        //break;
     }
     glm::vec3 normal = intersect.object->calculateNormal(intersect.collisionPoint);
     Material material = intersect.object->getMaterial();
@@ -50,53 +43,13 @@ Color Renderer::renderPixel(Ray ray, int depth) {
         if (randomDouble() < 0.5) ndir = diffuseDir;
     }
 
-    if (depth < this->recursion_depth)
-        return material.color.multiply(material.emissive).add(
-                this->renderPixel(Ray(intersect.collisionPoint + (ndir * 0.001f), ndir), depth + 1).multiply(
-                        this->light_loss));
-    else
-        return material.color.multiply(material.emissive);
-
-    /*Color object_color;
-    if (material.emissive > 0.0f) {
-        object_color = material.color.multiply(material.emissive);
+    if (depth < this->recursion_depth && material.emissive <= 0) {
+        return this->renderPixel(Ray(intersect.collisionPoint + (ndir * 0.001f), ndir), depth + 1).multiply(
+                material.color.divide(255)).multiply(this->light_loss).divide(
+                dot(rec.normal, scattered.direction()) / M_PI);
     } else {
-        object_color = material.color;
-        //object_color = Color(-255, -255, -255); // shadow
+        return material.color.multiply(material.emissive);
     }
-
-    glm::vec3 reflectionDirection;
-    reflectionDirection = glm::normalize(ray.direction - (normal * (glm::dot(normal, ray.direction) * 2)));
-    if (material.diffuse > 0.0 || material.reflectivity > 0.0 || material.emissive > 0.0) {
-        float diffuse_amount; // 0 = mirror reflection | 1 = full diffusion
-        if (material.diffuse > 0)
-            diffuse_amount = material.diffuse;
-        else if (material.reflectivity > 0)
-            diffuse_amount = 1 - material.reflectivity;
-
-        if (material.reflectivity > 0 && material.diffuse > 0) {
-            if (randomDouble() < 0.5) diffuse_amount = 1 - material.reflectivity; // 50% chance of diffusing if there's reflection
-        }
-        if (material.reflectivity < 1 || material.diffuse > 0 || material.emissive > 0) {
-            local_colors.emplace_back(object_color);
-        }
-
-        if (material.reflectivity <= 0 && material.diffuse <= 0) {
-            break;
-        } else {
-            ray = Ray::GenerateRandomRay(intersect.collisionPoint, normal, reflectionDirection, diffuse_amount);
-        }
-    }*/
-    //}
-    return Color::average(local_colors);
-}
-
-glm::vec3 Renderer::CanvasToViewport(glm::vec2 p2d) {
-    return glm::vec3(
-            p2d.x * this->viewport_size / (this->width) - 0.5,
-            (p2d.y * this->viewport_size / (this->height) - 0.5) * (this->height / this->width),
-            this->projection_plane_z
-    );
 }
 
 void Renderer::SetScene(Scene &scene) {

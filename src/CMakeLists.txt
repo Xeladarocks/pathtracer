@@ -14,3 +14,4 @@ include_directories(inc)
 add_executable(main ${SOURCE_FILES})
 
 target_link_libraries(main PRIVATE png PRIVATE pthread)
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math")

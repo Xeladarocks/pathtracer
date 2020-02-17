@@ -40,9 +40,9 @@ int main() {
     cin >> sampling;
 
     Scene scene; // scene
-    Renderer renderer(&scene, 640, 640, sampling, 16, 8, 0.5);
+    Renderer renderer(&scene, 1080, 1080, sampling, 20, 8, 0.5);
 
-    Camera camera(glm::vec3(0, 1.5, 10.5), (float) renderer.height / (float) renderer.width, 180,
+    Camera camera(glm::vec3(0, 6, 16), (float) renderer.height / (float) renderer.width, 180,
                   Rotation((180 - 0) * M_PI / 180, 0, 0)); // camera
     scene.setCamera(&camera);
     Skybox skybox(Color(63, 178, 232), Color(225, 244, 252), Color(225, 244, 252), false, Color(0, 0, 0)); // skybox
@@ -103,22 +103,44 @@ void renderChunk(int x0, int y0, int x1, int y1, Scene *scene, Renderer *rendere
 }
 
 void setupScene(Scene *scene) {
-    Sphere sphere1 = Sphere(glm::vec3(-3, 1.25, 0.0), 1.25, Material(1.0, 0.0, 0.0, Color(0.0, 0.0, 255.0)));
+    /** Main Objects **/
+    Sphere sphere1 = Sphere(glm::vec3(-2, 3, -2.0), 3, Material(0.0, 1.0, 0.0, Color(204.0, 204.0, 204.0)));
     scene->addObject(std::make_unique<Sphere>(sphere1));
 
-    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 0.0), 1.25, Material(0.5, 0.5, 0.0, Color(50.0, 255.0, 50.0)));
+    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 3.0), 1.25, Material(1.0, 0.0, 0.0, Color(204.0, 204.0, 204.0)));
     scene->addObject(std::make_unique<Sphere>(sphere2));
 
-    Sphere sphere3 = Sphere(glm::vec3(3, 1.25, 0.0), 1.25, Material(0.0, 1.0, 0.0, Color(255.0, 50.0, 50.0)));
+    Sphere sphere3 = Sphere(glm::vec3(3.5, 1.75, 0.0), 1.75, Material(0.5, 0.5, 0.0, Color(204.0, 204.0, 204.0)));
     scene->addObject(std::make_unique<Sphere>(sphere3));
 
-    vector<unique_ptr<Object>> light = Rect(glm::vec3(-2, 8, -2), glm::vec3(-2, 8, 2), glm::vec3(2, 8, 2),
-                                            glm::vec3(2, 8, -2), Material(0.0, 0.0, 5.0, Color(255.0, 255.0, 255.0)));
+
+    /** Lights **/
+    vector<unique_ptr<Object>> light = Rect(glm::vec3(-2, 11.99, -2), glm::vec3(-2, 11.99, 2), glm::vec3(2, 11.99, 2),
+                                            glm::vec3(2, 11.99, -2), Material(0.0, 0.0, 25.0, Color(255, 255, 255)));
     scene->addObjects(light);
 
-    Plane floor = Plane(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),
-                        Material(0.0, 1.0, 0.0, Color(0.0, 0.0, 0.0)));
-    scene->addObject(std::make_unique<Plane>(floor));
-    //Sphere floor = Sphere(glm::vec3(0, -50, 0), 50, Material(0.0, 1.0, 0.0, Color(255, 255, 255)));
-    //scene->addObject(std::make_unique<Sphere>(floor));
+
+    /** Walls **/
+    //Plane floor = Plane(glm::vec3(0.0, 0.0, 0.0), glm::vec3(0.0, 1.0, 0.0),Material(0.0, 1.0, 0.0, Color(255.0, 255.0, 255.0)));
+    //scene->addObject(std::make_unique<Plane>(floor)); // floor
+
+    vector<unique_ptr<Object>> floor = Rect(glm::vec3(6, 0, -6), glm::vec3(-6, 0, -6), glm::vec3(-6, 0, 6),
+                                            glm::vec3(6, 0, 6), Material(0.0, 1.0, 0.0, Color(255, 255, 255)));
+    scene->addObjects(floor);
+
+    vector<unique_ptr<Object>> wall1 = Rect(glm::vec3(-6, 0, 6), glm::vec3(-6, 0, -6), glm::vec3(-6, 12, -6),
+                                            glm::vec3(-6, 12, 6), Material(0.0, 1.0, 0.0, Color(255, 50, 50)));
+    scene->addObjects(wall1); // left
+    vector<unique_ptr<Object>> wall2 = Rect(glm::vec3(6, 0, -6), glm::vec3(6, 0, 6), glm::vec3(6, 12, 6),
+                                            glm::vec3(6, 12, -6), Material(0.0, 1.0, 0.0, Color(50, 255, 50)));
+    scene->addObjects(wall2); // right
+    vector<unique_ptr<Object>> wall3 = Rect(glm::vec3(-6, 0, -6), glm::vec3(6, 0, -6), glm::vec3(6, 12, -6),
+                                            glm::vec3(-6, 12, -6), Material(0.0, 1.0, 0.0, Color(255, 255, 255)));
+    scene->addObjects(wall3); // straight
+
+    vector<unique_ptr<Object>> ceiling = Rect(glm::vec3(-6, 12, -6), glm::vec3(6, 12, -6), glm::vec3(6, 12, 6),
+                                              glm::vec3(-6, 12, 6), Material(0.0, 1.0, 0.0, Color(255, 255, 255)));
+    scene->addObjects(ceiling);
+
+
 }

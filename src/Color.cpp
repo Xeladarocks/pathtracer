@@ -33,25 +33,39 @@ Color Color::add(Color c) {
 Color Color::sub(Color c) {
 	return Color(this->r - c.r, this->g - c.g, this->b - c.b);
 }
+
 Color Color::addVal(float f) {
-	return Color(this->r + f, this->g + f, this->b + f);
+    return Color(this->r + f, this->g + f, this->b + f);
 }
+
 Color Color::subVal(float f) {
-	return Color(this->r - f, this->g - f, this->b - f);
+    return Color(this->r - f, this->g - f, this->b - f);
 }
+
 Color Color::multiply(float f) {
-	return Color(this->r*f, this->g*f, this->b*f);
+    return Color(this->r * f, this->g * f, this->b * f);
 }
+
+Color Color::multiply(Color c) {
+    return Color(this->r * c.r, this->g * c.g, this->b * c.b);
+}
+
 Color Color::divide(float f) {
-	return Color(this->r / f, this->g / f, this->b / f);
+    return Color(this->r / f, this->g / f, this->b / f);
 }
+
+Color Color::divide(Color c) {
+    return Color(this->r / c.r, this->g / c.g, this->b / c.b);
+}
+
 Color Color::interpolate(Color c, float f) {
-	return Color(
-		this->r + (c.r - this->r)*f,
-		this->g + (c.g - this->g)*f,
-		this->b + (c.b - this->b)*f
-	);
+    return Color(
+            this->r + (c.r - this->r) * f,
+            this->g + (c.g - this->g) * f,
+            this->b + (c.b - this->b) * f
+    );
 }
+
 Color Color::average(vector<Color> colors) {
     float r = 0.0f;
     float g = 0.0f;

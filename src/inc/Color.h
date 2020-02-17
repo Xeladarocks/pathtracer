@@ -29,13 +29,19 @@ public:
 
     Color multiply(float f);
 
+    Color multiply(Color c);
+
     Color divide(float f);
+
+    Color divide(Color c);
 
     Color interpolate(Color c, float f);
 
     static Color average(vector<Color> colors);
-	Color clamp();
-	string toString();
+
+    Color clamp();
+
+    string toString();
 };
 
 #endif
