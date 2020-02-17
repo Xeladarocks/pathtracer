@@ -45,8 +45,7 @@ Color Renderer::renderPixel(Ray ray, int depth) {
 
     if (depth < this->recursion_depth && material.emissive <= 0) {
         return this->renderPixel(Ray(intersect.collisionPoint + (ndir * 0.001f), ndir), depth + 1).multiply(
-                material.color.divide(255)).multiply(this->light_loss).divide(
-                dot(rec.normal, scattered.direction()) / M_PI);
+                material.color.divide(255)).multiply(this->light_loss);
     } else {
         return material.color.multiply(material.emissive);
     }

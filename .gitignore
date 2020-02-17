@@ -1,8 +1,9 @@
 /build/*
 !/build/*.exe
-
 /.idea/
 /src/cmake-build-debug/
 core
 gmon.out
 profile.txt
+.gitignore
+/src/CMakeLists.txt
