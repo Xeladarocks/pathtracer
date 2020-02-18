@@ -3,6 +3,7 @@ using namespace std;
 #include <vector>
 #include <iostream>
 #include "inc/Scene.h"
+#include <SDL2/SDL.h>
 
 Scene::Scene() {}
 
@@ -23,17 +24,19 @@ void Scene::addObjects(vector<std::unique_ptr<Object>> &vector) {
         this->objects.emplace_back(move(vector[i]));
 }
 
-Intersection Scene::castRay(Ray ray) {
+Intersection Scene::castRay(Ray *ray, Renderer *renderer) {
     Object *object = nullptr;
     float closestDistance = -1;
 
     for (int i = 0; i < this->objects.size(); i++) {
         float dist = this->objects[i].get()->calculateIntersection(ray);
-        if (dist >= 0 && (dist < closestDistance || closestDistance < 0)) {
+
+        if (dist >= renderer->min_dist && dist < renderer->max_dist &&
+            (dist < closestDistance || closestDistance < 0)) {
             closestDistance = dist;
             object = this->objects[i].get();
         }
     }
 
-    return Intersection({closestDistance > -1, closestDistance, ray.across(closestDistance), object});
+    return Intersection({closestDistance > -1, closestDistance, ray->across(closestDistance), object});
 }

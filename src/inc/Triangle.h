@@ -21,12 +21,10 @@ public:
 
     Triangle(glm::vec3 v1, glm::vec3 v2, glm::vec3 v3, Material material);
 
-    float calculateIntersection(Ray ray);
+    float calculateIntersection(Ray *ray);
 
     glm::vec3 calculateNormal(glm::vec3 point);
-
     Material getMaterial();
-
     string GetName() { return typeid(this).name(); };
 };
 

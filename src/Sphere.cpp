@@ -16,10 +16,10 @@ Sphere::Sphere(glm::vec3 position, float radius, Material material) {
     this->material = material;
 }
 
-float Sphere::calculateIntersection(Ray ray) {
-    glm::vec3 oc = ray.origin - this->position;
-    float k1 = glm::dot(ray.direction, ray.direction);
-    float k2 = 2 * glm::dot(oc, ray.direction);
+float Sphere::calculateIntersection(Ray *ray) {
+    glm::vec3 oc = ray->origin - this->position;
+    float k1 = glm::dot(ray->direction, ray->direction);
+    float k2 = 2 * glm::dot(oc, ray->direction);
     float k3 = glm::dot(oc, oc) - this->radius * this->radius;
     float discriminant = k2 * k2 - 4 * k1 * k3;
     if (discriminant < 0) {

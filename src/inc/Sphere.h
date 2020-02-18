@@ -1,7 +1,10 @@
 #pragma once
+#ifndef SPHERE_H
+#define SPHERE_H
 using namespace std;
 
 #define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 #include "Object.h"
 #include "Color.h"
@@ -18,11 +21,11 @@ public:
 
     Sphere(glm::vec3 position, float radius, Material material);
 
-    float calculateIntersection(Ray ray);
+    float calculateIntersection(Ray *ray);
 
     glm::vec3 calculateNormal(glm::vec3 collisionPoint);
-
     Material getMaterial();
-
     glm::vec3 calculateUVCoordinates(glm::vec3 collisionPoint, glm::vec3 normal);
 };
+
+#endif

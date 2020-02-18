@@ -22,28 +22,28 @@ Ray Camera::getRay(double x, double y) {
     return Ray(position, direction);
 }
 
-void Camera::update() {
+void Camera::update(float deltaTime) {
     if (this->controls.w) {
         glm::vec3 direction = this->forward * this->rotation.yawMat;
-        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+        this->position = this->position + direction * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.s) {
         glm::vec3 direction = this->forward * this->rotation.yawMat;
-        this->position = this->position - direction; // * speedModifier * (deltaTime/50)
+        this->position = this->position - direction * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.a) {
         glm::vec3 direction = glm::vec3(-1, 0, 0) * this->rotation.yawMat;
-        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+        this->position = this->position + direction * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.d) {
         glm::vec3 direction = glm::vec3(1, 0, 0) * this->rotation.yawMat;
-        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+        this->position = this->position + direction * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.e) {
-        this->position = this->position + glm::vec3(0, 1, 0); // * speedModifier * (deltaTime/50)
+        this->position = this->position + glm::vec3(0, 1, 0) * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.q) {
-        this->position = this->position - glm::vec3(0, 1, 0); // * speedModifier * (deltaTime/50)
+        this->position = this->position - glm::vec3(0, 1, 0) * (deltaTime / 50); // * speedModifier
     }
     if (this->controls.left) {
         this->rotation.yaw -= glm::radians(5.0f);

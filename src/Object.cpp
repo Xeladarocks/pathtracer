@@ -2,7 +2,7 @@
 
 Object::Object() {}
 
-float Object::calculateIntersection(Ray ray) {
+float Object::calculateIntersection(Ray *ray) {
     throw "Object::calculateIntersection() called";
 }
 

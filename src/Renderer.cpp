@@ -5,7 +5,7 @@ using namespace std;
 #include "inc/Util.h"
 
 Renderer::Renderer(Scene *scene, int width, int height, int samples, int thread_count, int recursion_depth,
-                   float light_loss, float viewport_size, float projection_plane_z) {
+                   float light_loss, float min_dist, float max_dist) {
     this->scene = scene;
     this->width = width;
     this->height = height;
@@ -13,13 +13,13 @@ Renderer::Renderer(Scene *scene, int width, int height, int samples, int thread_
     this->thread_count = thread_count;
     this->recursion_depth = recursion_depth;
     this->light_loss = light_loss;
-    this->projection_plane_z = projection_plane_z;
-    this->viewport_size = viewport_size;
+    this->min_dist = min_dist;
+    this->max_dist = max_dist;
 }
 
 Color Renderer::renderPixel(Ray ray, int depth) {
     //rays_shot++;
-    Intersection intersect = this->scene->castRay(ray);
+    Intersection intersect = this->scene->castRay(&ray, this);
     if (!intersect.hit) {
         if (scene->skybox) {
             return scene->skybox->getColorAt(ray.direction);

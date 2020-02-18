@@ -1,7 +1,3 @@
-//
-// Created by xelada on 2/9/20.
-//
-
 #ifndef PATHTRACER_PLANE_H
 #define PATHTRACER_PLANE_H
 
@@ -18,10 +14,9 @@ public:
 
     Plane(glm::vec3 position, glm::vec3 normal, Material material);
 
-    float calculateIntersection(Ray ray);
+    float calculateIntersection(Ray *ray);
 
     glm::vec3 calculateNormal(glm::vec3 collisionPoint);
-
     Material getMaterial();
 };
 

@@ -16,12 +16,12 @@ Plane::Plane(glm::vec3 position, glm::vec3 normal, Material material) {
     this->material = material;
 }
 
-float Plane::calculateIntersection(Ray ray) {
-    if (glm::dot(this->normal, glm::normalize(ray.direction)) == 0) {
+float Plane::calculateIntersection(Ray *ray) {
+    if (glm::dot(this->normal, glm::normalize(ray->direction)) == 0) {
         return -1;
     }
-    float t = (glm::dot(this->normal, this->position) - glm::dot(this->normal, ray.origin)) /
-              glm::dot(this->normal, glm::normalize(ray.direction));
+    float t = (glm::dot(this->normal, this->position) - glm::dot(this->normal, ray->origin)) /
+              glm::dot(this->normal, glm::normalize(ray->direction));
     return t;
 }
 

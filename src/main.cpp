@@ -10,9 +10,7 @@ using namespace std;
 
 // broad purpose
 #include "inc/Color.h"
-
 #define GLM_ENABLE_EXPERIMENTAL
-
 #include <glm/glm.hpp>
 #include <png++/png.hpp>
 
@@ -30,34 +28,34 @@ using namespace std;
 #include "inc/Material.h"
 #include "inc/Camera.h"
 #include "inc/Skybox.h"
-#include "inc/Scene.h"
 #include "inc/Renderer.h"
+#include "inc/Scene.h"
 #include "inc/Rotation.h"
 
 #ifndef ANIMATE
 void renderThreads(Renderer *renderer, png::image<png::rgba_pixel> *image);
 void renderChunk(int x0, int y0, int x1, int y1, Renderer *renderer, png::image<png::rgba_pixel> *image);
 #else
-
 void renderThreads(Renderer *renderer, vector<Uint32> &pixels);
-
 void renderChunk(int x0, int y0, int x1, int y1, Renderer *renderer, vector<Uint32> &pixels);
 
 Uint32 ColorToUInt(Color color) {
     return (Uint32) (((int) color.r << 24) | ((int) color.r << 16) | ((int) color.g << 8) | ((int) color.b << 0));
 }
-
 #endif
-
 void setupScene(Scene *scene);
 
 int main() {
+#ifndef ANIMATE
     int sampling;
     cout << "Samples: ";
     cin >> sampling;
+#else
+    int sampling = 1;
+#endif
 
     Scene scene; // scene
-    Renderer renderer(&scene, 600, 600, sampling, 10, 8, 0.5);
+    Renderer renderer(&scene, 600, 600, sampling, 60, 8, 0.5, 0.001, 100);
 
     Camera camera(glm::vec3(0, 6, -16), (float) renderer.height / (float) renderer.width, 180,
                   Rotation((180 - 0) * M_PI / 180, (180 - 0) * M_PI / 180, 0)); // camera
@@ -66,8 +64,10 @@ int main() {
     scene.setSkybox(&skybox);
 
 #ifdef ANIMATE
-    renderer.samples = 1;
-    renderer.recursion_depth = 3;
+    renderer.recursion_depth = 5;
+#else
+    renderer.max_dist = 10000;
+    renderer.min_dist = 0;
 #endif
 
     try {
@@ -94,7 +94,7 @@ int main() {
         if (window == NULL) {
             printf("Window could not be created! SDL_Error: %s\n", SDL_GetError());
         } else {
-            SDL_Renderer *rd = SDL_CreateRenderer(window, -1, 0);
+            SDL_Renderer *rd = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
             SDL_Texture *texture = SDL_CreateTexture(rd, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STATIC,
                                                      renderer.width, renderer.height);
             vector<Uint32> pixels(renderer.width * renderer.height);
@@ -102,7 +102,15 @@ int main() {
             bool quit = false;
             SDL_Event event;
             const Uint8 *currentKeyStates = SDL_GetKeyboardState(NULL);
+
+            Uint64 NOW = SDL_GetPerformanceCounter();
+            Uint64 LAST = 0;
+            float deltaTime = 0;
             while (!quit) {
+                LAST = NOW;
+                NOW = SDL_GetPerformanceCounter();
+                deltaTime = (float) ((NOW - LAST) * 1000 / (float) SDL_GetPerformanceFrequency());
+
                 //Handle events on queue
                 while (SDL_PollEvent(&event) != 0) {
                     //User requests quit
@@ -140,6 +148,12 @@ int main() {
                                 break;
                             case 0x052:
                                 renderer.scene->camera->controls.up = true;
+                                break;
+                            case 0x060:
+                                renderer.samples += 1;
+                                break;
+                            case 0x05A:
+                                renderer.samples -= 1;
                                 break;
                         }
                     }
@@ -179,7 +193,7 @@ int main() {
                     }
                 }
 
-                renderer.scene->camera->update();
+                renderer.scene->camera->update(deltaTime);
 
                 SDL_UpdateTexture(texture, NULL, pixels.data(), renderer.width * sizeof(Uint32));
                 renderThreads(&renderer, pixels);
@@ -240,8 +254,13 @@ void renderChunk(int x0, int y0, int x1, int y1, Renderer *renderer, vector<Uint
             Color cols;
             for (int s = 0; s < renderer->samples; s++) {
                 float u, v;
-                u = (x + randomDouble()) / renderer->width;
-                v = (y + randomDouble()) / renderer->height;
+                if (renderer->samples > 1) {
+                    u = (x + randomDouble()) / renderer->width;
+                    v = (y + randomDouble()) / renderer->height;
+                } else { // sampling = 1
+                    u = (x + 0.5) / renderer->width;
+                    v = (y + 0.5) / renderer->height;
+                }
                 Ray ray = renderer->scene->camera->getRay(u, v);
 
                 Color traced_color = renderer->renderPixel(ray);
@@ -262,13 +281,13 @@ void renderChunk(int x0, int y0, int x1, int y1, Renderer *renderer, vector<Uint
 
 void setupScene(Scene *scene) {
 /** Main Objects **/
-    Sphere sphere1 = Sphere(glm::vec3(-2, 3, -2.0), 3, Material(0.0, 1.0, 0.0, Color(204.0, 204.0, 204.0)));
+    Sphere sphere1 = Sphere(glm::vec3(-2, 3, -2.0), 3, Material(0.0, 1.0, 0.0, Color(255.0, 0.0, 0.0)));
     scene->addObject(std::make_unique<Sphere>(sphere1));
 
-    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 3.0), 1.25, Material(1.0, 0.0, 0.0, Color(204.0, 204.0, 204.0)));
+    Sphere sphere2 = Sphere(glm::vec3(0.0, 1.25, 3.0), 1.25, Material(1.0, 0.0, 0.0, Color(0.0, 255.0, 0.0)));
     scene->addObject(std::make_unique<Sphere>(sphere2));
 
-    Sphere sphere3 = Sphere(glm::vec3(3.5, 1.75, 0.0), 1.75, Material(0.5, 0.5, 0.0, Color(204.0, 204.0, 204.0)));
+    Sphere sphere3 = Sphere(glm::vec3(3.5, 1.75, 0.0), 1.75, Material(0.5, 0.5, 0.0, Color(0.0, 0.0, 255.0)));
     scene->addObject(std::make_unique<Sphere>(sphere3));
 
 

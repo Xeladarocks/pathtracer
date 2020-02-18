@@ -37,7 +37,7 @@ public:
 
     Ray getRay(double x, double y);
 
-    void update();
+    void update(float deltaTime);
 };
 
 #endif
