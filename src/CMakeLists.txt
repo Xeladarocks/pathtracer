@@ -13,5 +13,5 @@ include_directories(inc)
 # Add executable target with source files listed in SOURCE_FILES variable
 add_executable(main ${SOURCE_FILES})
 
-target_link_libraries(main PRIVATE png PRIVATE pthread)
+target_link_libraries(main PRIVATE png PRIVATE pthread PUBLIC SDL2)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -O3 -ffast-math")

@@ -1,6 +1,7 @@
 using namespace std;
 
 #include "inc/Camera.h"
+#include <iostream>
 
 Camera::Camera(glm::vec3 position, float aspectRatio, float fov, Rotation rotation) {
     this->position = position;
@@ -19,4 +20,45 @@ Ray Camera::getRay(double x, double y) {
     direction = glm::normalize(direction);
 
     return Ray(position, direction);
+}
+
+void Camera::update() {
+    if (this->controls.w) {
+        glm::vec3 direction = this->forward * this->rotation.yawMat;
+        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.s) {
+        glm::vec3 direction = this->forward * this->rotation.yawMat;
+        this->position = this->position - direction; // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.a) {
+        glm::vec3 direction = glm::vec3(-1, 0, 0) * this->rotation.yawMat;
+        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.d) {
+        glm::vec3 direction = glm::vec3(1, 0, 0) * this->rotation.yawMat;
+        this->position = this->position + direction; // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.e) {
+        this->position = this->position + glm::vec3(0, 1, 0); // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.q) {
+        this->position = this->position - glm::vec3(0, 1, 0); // * speedModifier * (deltaTime/50)
+    }
+    if (this->controls.left) {
+        this->rotation.yaw -= glm::radians(5.0f);
+        this->rotation.updateYawMat();
+    }
+    if (this->controls.right) {
+        this->rotation.yaw += glm::radians(5.0f);
+        this->rotation.updateYawMat();
+    }
+    if (this->controls.down) {
+        this->rotation.pitch -= glm::radians(5.0f);
+        this->rotation.updatePitchMat();
+    }
+    if (this->controls.up) {
+        this->rotation.pitch += glm::radians(5.0f);
+        this->rotation.updatePitchMat();
+    }
 }
